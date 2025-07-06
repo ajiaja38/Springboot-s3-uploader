@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseMessageWrapper {
+
     private Number code;
     private Boolean status;
     private String message;
+
 }
