@@ -7,5 +7,5 @@ import org.springframework.web.multipart.MultipartFile;
 import com.uploader.spring.models.dto.UploaderResponsedto;
 
 public interface UploaderService {
-    UploaderResponsedto uploadData(MultipartFile file) throws IOException;
+    UploaderResponsedto uploadFile(MultipartFile file) throws IOException;
 }

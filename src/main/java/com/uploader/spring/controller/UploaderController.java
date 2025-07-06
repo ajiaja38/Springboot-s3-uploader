@@ -3,6 +3,7 @@ package com.uploader.spring.controller;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.uploader.spring.models.dto.ResponseWrapper;
 import com.uploader.spring.models.dto.UploaderResponsedto;
 import com.uploader.spring.service.UploaderService;
+import com.uploader.spring.utils.constant.ApiBeanConstant;
 import com.uploader.spring.utils.constant.ApiPathConstant;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -24,13 +26,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class UploaderController {
 
     @Autowired
-    private UploaderService uploaderService;
+    @Qualifier(ApiBeanConstant.BIZNETS3SERVICE)
+    private UploaderService biznetUploader;
 
-    @PostMapping(value = "s3", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "s3/biznet", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseWrapper<UploaderResponsedto>> uploaderS3Handler(
             @RequestParam("file") MultipartFile file) throws IOException {
 
-        UploaderResponsedto response = this.uploaderService.uploadData(file);
+        UploaderResponsedto response = this.biznetUploader.uploadFile(file);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

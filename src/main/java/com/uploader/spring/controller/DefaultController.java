@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class DefaultController {
+
     @GetMapping("/")
     public ResponseEntity<ResponseWrapper<String>> defaultEndpoint() {
         String dataWelcome = "Welcome to springboot uploader";

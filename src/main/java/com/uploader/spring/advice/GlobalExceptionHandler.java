@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ResponseMessageWrapper> handleIOException(IOException ex, WebRequest request) {
         log.error("IO Exception occured", ex.getMessage(), ex);

@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.uploader.spring.models.dto.UploaderResponsedto;
 import com.uploader.spring.service.UploaderService;
+import com.uploader.spring.utils.constant.ApiBeanConstant;
 
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -18,11 +20,12 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-@Service
+@Service(ApiBeanConstant.BIZNETS3SERVICE)
 @Slf4j
-public class UploaderServiceImpl implements UploaderService {
+public class BiznetUploaderServiceImpl implements UploaderService {
 
     @Autowired
+    @Qualifier(ApiBeanConstant.BIZNETS3)
     private S3Client s3Client;
 
     @Value("${biznet.s3.bucket}")
@@ -32,7 +35,7 @@ public class UploaderServiceImpl implements UploaderService {
     private String endpoint;
 
     @Override
-    public UploaderResponsedto uploadData(MultipartFile file) throws IOException {
+    public UploaderResponsedto uploadFile(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new IOException("FIle Cannot be empty");
         }
