@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uploader.spring.models.dto.MinioDonwloadFileDto;
-import com.uploader.spring.service.impl.MinioUploaderServiceImpl;
+import com.uploader.spring.service.ServeMinioService;
 import com.uploader.spring.utils.constant.ApiPathConstant;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ServeController {
 
     @Autowired
-    private MinioUploaderServiceImpl minioUploaderServiceImpl;
+    private ServeMinioService serveMinioService;
 
     @GetMapping("/{filename}")
     public ResponseEntity<InputStreamResource> serveMinioFile(@PathVariable String filename) throws IOException {
-        MinioDonwloadFileDto minioDonwloadFileDto = this.minioUploaderServiceImpl.serveFile(filename);
+        MinioDonwloadFileDto minioDonwloadFileDto = this.serveMinioService.serveFile(filename);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"");

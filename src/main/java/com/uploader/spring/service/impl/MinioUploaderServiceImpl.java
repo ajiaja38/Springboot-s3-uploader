@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.uploader.spring.models.dto.MinioDonwloadFileDto;
 import com.uploader.spring.models.dto.UploaderResponsedto;
+import com.uploader.spring.service.ServeMinioService;
 import com.uploader.spring.service.UploaderService;
 import com.uploader.spring.utils.constant.ApiBeanConstant;
 
@@ -26,7 +27,7 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service(ApiBeanConstant.MINIOS3SERVICE)
 @Slf4j
-public class MinioUploaderServiceImpl implements UploaderService {
+public class MinioUploaderServiceImpl implements UploaderService, ServeMinioService {
 
     @Autowired
     @Qualifier(ApiBeanConstant.MINIOS3)
