@@ -21,7 +21,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry interceptorRegistry) {
-        interceptorRegistry.addInterceptor(apiKeyInterceptor).addPathPatterns("/api/v1/**");
+        interceptorRegistry.addInterceptor(apiKeyInterceptor).addPathPatterns("/api/v1/**")
+                .excludePathPatterns("/api/v1/serve/**");
     }
 
     @Bean

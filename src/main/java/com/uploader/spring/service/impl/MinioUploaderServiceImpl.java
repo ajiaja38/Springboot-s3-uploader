@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.uploader.spring.models.dto.MinioDonwloadFileDto;
 import com.uploader.spring.models.dto.UploaderResponsedto;
 import com.uploader.spring.service.UploaderService;
 import com.uploader.spring.utils.constant.ApiBeanConstant;
 
 import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
@@ -62,9 +66,8 @@ public class MinioUploaderServiceImpl implements UploaderService {
 
             log.info("File Uploaded successfully to s3. ETag: {}", putObjectResponse.eTag());
 
-            String urlResponse = String.format("%s/%s/%s",
-                    this.endpoint,
-                    this.bucket,
+            String urlResponse = String.format("%s/%s",
+                    "http://localhost:8080/api/v1/serve",
                     s3Key);
 
             return UploaderResponsedto.builder().url(urlResponse).build();
@@ -74,6 +77,29 @@ public class MinioUploaderServiceImpl implements UploaderService {
         } catch (IOException e) {
             log.error("File Processing Error", e.getMessage());
             throw new IOException("Failed to read file content: " + e.getMessage());
+        }
+    }
+
+    public MinioDonwloadFileDto serveFile(String s3Key) throws IOException {
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(this.bucket)
+                    .key(s3Key)
+                    .build();
+
+            ResponseInputStream<GetObjectResponse> s3Object = this.s3Client.getObject(getObjectRequest);
+
+            GetObjectResponse response = s3Object.response();
+
+            return MinioDonwloadFileDto.builder()
+                    .inputStream(s3Object)
+                    .contentType(response.contentType())
+                    .contentLength(response.contentLength())
+                    .build();
+
+        } catch (S3Exception e) {
+            log.error("MinIO serve failed for key {}:{}", s3Key, e.awsErrorDetails().errorMessage(), e);
+            throw new IOException("Failed to serve file from MinIO: " + e.getMessage());
         }
     }
 }

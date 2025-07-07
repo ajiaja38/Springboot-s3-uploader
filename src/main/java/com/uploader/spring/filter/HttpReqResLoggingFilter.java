@@ -41,7 +41,6 @@ public class HttpReqResLoggingFilter extends OncePerRequestFilter {
         } finally {
             long duration = System.currentTimeMillis() - startTime;
             logRequest(requestWrapper, duration);
-            logResponse(responseWrapper);
             responseWrapper.copyBodyToResponse();
         }
     }
@@ -78,36 +77,6 @@ public class HttpReqResLoggingFilter extends OncePerRequestFilter {
                 msg.append("Payload: ").append(payload).append("\n");
             } catch (UnsupportedEncodingException e) {
                 log.warn("Failed to parse request payload for logging: {}", e.getMessage());
-            }
-        }
-        msg.append("--------------------\n");
-        log.info(msg.toString());
-    }
-
-    private void logResponse(ContentCachingResponseWrapper response) {
-        StringBuilder msg = new StringBuilder();
-        msg.append("\n--- HTTP Response ---\n");
-        msg.append("Status: ").append(response.getStatus()).append("\n");
-
-        // Log Headers Respons
-        msg.append("Headers:\n");
-        response.getHeaderNames().forEach(headerName -> {
-            String headerValue = response.getHeader(headerName);
-            msg.append("  ").append(headerName).append(": ");
-            if (isSensitiveHeader(headerName)) {
-                msg.append("[REDACTED]\n");
-            } else {
-                msg.append(headerValue).append("\n");
-            }
-        });
-
-        byte[] content = response.getContentAsByteArray();
-        if (content.length > 0) {
-            try {
-                String payload = new String(content, response.getCharacterEncoding());
-                msg.append("Payload: ").append(payload).append("\n");
-            } catch (UnsupportedEncodingException e) {
-                log.warn("Failed to parse response payload for logging: {}", e.getMessage());
             }
         }
         msg.append("--------------------\n");
