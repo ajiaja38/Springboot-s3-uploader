@@ -68,7 +68,7 @@ public class MinioUploaderServiceImpl implements UploaderService, ServeMinioServ
             log.info("File Uploaded successfully to s3. ETag: {}", putObjectResponse.eTag());
 
             String urlResponse = String.format("%s/%s",
-                    "http://localhost:8080/api/v1/serve",
+                    "https://s3.lskk.co.id/api/v1/serve",
                     s3Key);
 
             return UploaderResponsedto.builder().url(urlResponse).build();
