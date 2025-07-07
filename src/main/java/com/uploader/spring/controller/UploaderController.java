@@ -21,28 +21,43 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @RequestMapping(ApiPathConstant.API +
-        ApiPathConstant.VERSION +
-        "/uploader")
+                ApiPathConstant.VERSION +
+                "/uploader")
 public class UploaderController {
 
-    @Autowired
-    @Qualifier(ApiBeanConstant.BIZNETS3SERVICE)
-    private UploaderService biznetUploader;
+        @Autowired
+        @Qualifier(ApiBeanConstant.BIZNETS3SERVICE)
+        private UploaderService biznetUploader;
 
-    @PostMapping(value = "s3/biznet", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseWrapper<UploaderResponsedto>> uploaderS3Handler(
-            @RequestParam("file") MultipartFile file) throws IOException {
+        @Autowired
+        @Qualifier(ApiBeanConstant.MINIOS3SERVICE)
+        private UploaderService minioUploader;
 
-        UploaderResponsedto response = this.biznetUploader.uploadFile(file);
+        @PostMapping(value = "s3/biznet", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<ResponseWrapper<UploaderResponsedto>> uploaderBiznetS3Handler(
+                        @RequestParam("file") MultipartFile file) throws IOException {
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(
-                        new ResponseWrapper<UploaderResponsedto>(
-                                HttpStatus.OK.value(),
-                                Boolean.TRUE,
-                                "Success Upload data",
-                                response));
-    }
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(
+                                                new ResponseWrapper<UploaderResponsedto>(
+                                                                HttpStatus.OK.value(),
+                                                                Boolean.TRUE,
+                                                                "Success Upload data",
+                                                                this.biznetUploader.uploadFile(file)));
+        }
+
+        @PostMapping(value = "s3/minio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<ResponseWrapper<UploaderResponsedto>> uploaderMinioS3Handler(
+                        @RequestParam("file") MultipartFile file) throws IOException {
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(
+                                                new ResponseWrapper<UploaderResponsedto>(
+                                                                HttpStatus.OK.value(),
+                                                                Boolean.TRUE,
+                                                                "Success Upload Data Minio",
+                                                                this.minioUploader.uploadFile(file)));
+        }
 
 }

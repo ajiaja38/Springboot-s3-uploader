@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Configuration
 public class S3Config {
 
+    // Biznet Property
     @Value("${biznet.s3.access-key}")
     private String accessKey;
 
@@ -28,13 +29,37 @@ public class S3Config {
     @Value("${biznet.s3.region}")
     private String region;
 
+    // Minio Property
+    @Value("${minio.s3.access-key}")
+    private String minioAccessKey;
+
+    @Value("${minio.s3.secret-key}")
+    private String minioSecretKey;
+
+    @Value("${minio.s3.endpoint}")
+    private String minioEndpoint;
+
+    @Value("${minio.s3.region}")
+    private String minioRegion;
+
     @Bean(name = ApiBeanConstant.BIZNETS3)
-    S3Client s3Client() {
+    S3Client biznetS3Client() {
         return S3Client.builder()
-                .endpointOverride(URI.create("https://" + endpoint))
+                .endpointOverride(URI.create(endpoint))
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)))
                 .region(Region.of(region))
+                .forcePathStyle(true)
+                .build();
+    }
+
+    @Bean(name = ApiBeanConstant.MINIOS3)
+    S3Client minioS3Client() {
+        return S3Client.builder()
+                .endpointOverride(URI.create(this.minioEndpoint))
+                .credentialsProvider(StaticCredentialsProvider.create(
+                        AwsBasicCredentials.create(this.minioAccessKey, this.minioSecretKey)))
+                .region(Region.of(this.minioRegion))
                 .forcePathStyle(true)
                 .build();
     }

@@ -20,18 +20,18 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-@Service(ApiBeanConstant.BIZNETS3SERVICE)
+@Service(ApiBeanConstant.MINIOS3SERVICE)
 @Slf4j
-public class BiznetUploaderServiceImpl implements UploaderService {
+public class MinioUploaderServiceImpl implements UploaderService {
 
     @Autowired
-    @Qualifier(ApiBeanConstant.BIZNETS3)
+    @Qualifier(ApiBeanConstant.MINIOS3)
     private S3Client s3Client;
 
-    @Value("${biznet.s3.bucket}")
+    @Value("${minio.s3.bucket}")
     private String bucket;
 
-    @Value("${biznet.s3.endpoint}")
+    @Value("${minio.s3.endpoint}")
     private String endpoint;
 
     @Override
@@ -76,5 +76,4 @@ public class BiznetUploaderServiceImpl implements UploaderService {
             throw new IOException("Failed to read file content: " + e.getMessage());
         }
     }
-
 }
